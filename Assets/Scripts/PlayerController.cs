@@ -22,6 +22,11 @@ public class PlayerController : MonoBehaviour
 
     private AudioSource playerAudio;
 
+    // Arrow 생성 및 제어
+    public GameObject ArrowPrefab;
+    private bool bGenerate = true;
+
+
     void Start()
     {
         //초기화 작업
@@ -39,7 +44,14 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded)
         {
-            transform.Translate(Vector3.left * speed * Time.deltaTime);
+            //transform.Translate(Vector3.left * speed * Time.deltaTime);
+            if(true == bGenerate)
+            {
+                GameObject Arrow = Instantiate(ArrowPrefab) as GameObject;
+                Arrow.transform.position = this.transform.position;
+
+                bGenerate = false;
+            }
         }
         if (Input.GetMouseButtonDown(0) && jumpCount < 1)
         {
