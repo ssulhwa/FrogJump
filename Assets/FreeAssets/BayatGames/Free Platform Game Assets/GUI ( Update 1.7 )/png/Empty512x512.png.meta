@@ -1470,7 +1470,7 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      Empty512x512_18: -1553097036
+      Empty512x512_36: -1738669262
       Empty512x512_23: -2107299753
       Empty512x512_40: -1054430229
       Empty512x512_61: -1671291038
@@ -1531,9 +1531,9 @@ TextureImporter:
       Empty512x512_57: -30874574
       Empty512x512_59: 460692393
       Empty512x512_32: -674384312
-      Empty512x512_36: -1738669262
-      Empty512x512_47: -1002143447
+      Empty512x512_18: -1553097036
       Empty512x512_60: 34878832
+      Empty512x512_47: -1002143447
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

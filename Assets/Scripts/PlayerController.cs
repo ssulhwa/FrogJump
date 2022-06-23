@@ -16,16 +16,13 @@ public class PlayerController : MonoBehaviour
     private bool isGrounded = false; //땅에 붙어있는지
     private bool isDead = false;     //죽었는지
 
+    private bool bJumping = false;
+
     private Rigidbody2D playerRigidbody;
     
     private Animator animator;
 
     private AudioSource playerAudio;
-
-    // Arrow 생성 및 제어
-    public GameObject ArrowPrefab;
-    private bool bGenerate = true;
-
 
     void Start()
     {
@@ -44,15 +41,14 @@ public class PlayerController : MonoBehaviour
 
         if (isGrounded)
         {
-            //transform.Translate(Vector3.left * speed * Time.deltaTime);
-            if(true == bGenerate)
-            {
-                GameObject Arrow = Instantiate(ArrowPrefab) as GameObject;
-                Arrow.transform.position = this.transform.position;
-
-                bGenerate = false;
-            }
+            bJumping = false;
         }
+
+        if(Input.GetKeyDown(KeyCode.Q))
+        {
+            playerRigidbody.AddForce(transform.up * 300f);
+        }
+
         if (Input.GetMouseButtonDown(0) && jumpCount < 1)
         {
             jumpCount++;
@@ -108,5 +104,14 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.tag == "Dead" && !isDead)
             Die();
+    }
+
+    public bool IsJumping()
+    {
+        return isGrounded;
+    }
+    public void Jumping()
+    {
+        bJumping = true;
     }
 }
