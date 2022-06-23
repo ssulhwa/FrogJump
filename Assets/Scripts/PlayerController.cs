@@ -8,8 +8,8 @@ public class PlayerController : MonoBehaviour
 
     public AudioClip deathClip;
     
-    public float jumpForce = 400f;
-    public float jumpForceX = 1000f;
+    public float jumpForce = 0.2f;
+    public float jumpForceX = 3000f;
 
 
     private int jumpCount = 0;       //누적 점프횟수
@@ -85,6 +85,9 @@ public class PlayerController : MonoBehaviour
 
         //사망 상태를 true 변경
         isDead = true;
+
+        //게임 매니저의 게임오버 처리
+        GameManager.instance.OnplayerDead();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
