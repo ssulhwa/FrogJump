@@ -10,6 +10,7 @@ public class GaugeController : MonoBehaviour
     bool bStop = false;
 
     float fMin   = 0.1f;
+    float fCurrentX = 0f;
 
     // Start is called before the first frame update
     void Start()
@@ -22,7 +23,7 @@ public class GaugeController : MonoBehaviour
     {
         if(false == bStop)
         {
-            float fCurrentX = bar.localScale.x;
+            fCurrentX = bar.localScale.x;
 
             if(false == bMove)
             {
@@ -44,6 +45,11 @@ public class GaugeController : MonoBehaviour
                 bMove = true;
             }
         }
+    }
+
+    public float GetSize()
+    {
+        return fCurrentX;
     }
 
     public void Stop()

@@ -50,7 +50,6 @@ public class GameManager : MonoBehaviour
             //점수를 증가
             score += newScore;
             scoreText.text = score.ToString();
-            Debug.Log(score);
         }
     }
 

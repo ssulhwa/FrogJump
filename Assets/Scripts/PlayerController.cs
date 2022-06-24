@@ -4,69 +4,65 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
+    private enum STATE 
+    { 
+        STATE_IDLE,
+        STATE_ARROW_GENERATE,
+        STATE_ARROW,
+        STATE_GAUGE_GENERATE,
+        STATE_GAUGE,
+        STATE_JUMPING,
+        STATE_FLYING,
+        STATE_LANDING,
+        STATE_END
+    };
+
+    private STATE eState;
+    private Vector2 vDir;
+    private float fPower   = 0f;
+    private float fTimeAcc = 0f;
+    private bool  bStart   = false;
+
+    public ArrowController ArrowPrefab;
+    public ArrowController Arrow;
+
+    public GaugeController GaugePrefab;
+    public GaugeController Gauge;
+
+    /////////////////////////////////////////////////////////////////
+
     public float speed = 2f;  //왼쪽으로 밀리는 속도
 
-    public AudioClip deathClip;
-    
-    public float jumpForce = 0.2f;
-    public float jumpForceX = 3000f;
-
-
-    private int jumpCount = 0;       //누적 점프횟수
-    private bool isGrounded = false; //땅에 붙어있는지
-    private bool isDead = false;     //죽었는지
-
-    private bool bJumping = false;
-
+    private Animator    animator;
+    public  AudioClip   deathClip;
     private Rigidbody2D playerRigidbody;
-    
-    private Animator animator;
-
     private AudioSource playerAudio;
+
+    private bool isGrounded = false; //땅에 붙어있는지
+    private bool isDead     = false; //죽었는지
 
     void Start()
     {
         //초기화 작업
         //게임 오브젝트로부터 사용할 컴포넌트들을 가져와 변수에 할당
         playerRigidbody = GetComponent<Rigidbody2D>();
-        animator = GetComponent<Animator>();
-        playerAudio = GetComponent<AudioSource>();
+        animator        = GetComponent<Animator>();
+        playerAudio     = GetComponent<AudioSource>();
+
+        eState = STATE.STATE_FLYING;
+
+        bStart = true;
     }
 
     // Update is called once per frame
     void Update()
     {
         if (isDead)
+        {
             return;
-
-        if (isGrounded)
-        {
-            bJumping = false;
         }
 
-        if(Input.GetKeyDown(KeyCode.Q))
-        {
-            playerRigidbody.AddForce(transform.up * 300f);
-        }
-
-        if (Input.GetMouseButtonDown(0) && jumpCount < 1)
-        {
-            jumpCount++;
-
-            playerRigidbody.velocity = Vector2.zero;    //직전 속도에 영향을 받지 않도록 함
-
-            playerRigidbody.AddForce(new Vector3(jumpForceX,jumpForce));
-
-            playerAudio.Play();
-        }
-        else if(Input.GetMouseButtonUp(0) && playerRigidbody.velocity.y > 0)
-        {
-            //y값이 양수이면 속도를 절반으로 변경
-            playerRigidbody.velocity = playerRigidbody.velocity * 0.5f;
-        }
-
-        //애니메이터의 Grounded 파라미터를 isGrounded 값으로 갱신
-        animator.SetBool("Grounded", isGrounded); 
+        PlayerBehavior();
     }
 
     private void Die()
@@ -92,7 +88,7 @@ public class PlayerController : MonoBehaviour
         if(collision.contacts[0].normal.y > 0.7f)
         {
             isGrounded = true;      //땅위에 있다
-            jumpCount = 0;          //초기화
+            eState = STATE.STATE_LANDING;
         }
     }
 
@@ -103,15 +99,127 @@ public class PlayerController : MonoBehaviour
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Dead" && !isDead)
+        {
             Die();
+        }
     }
 
-    public bool IsJumping()
+    private void PlayerBehavior()
     {
-        return isGrounded;
-    }
-    public void Jumping()
-    {
-        bJumping = true;
+        switch (eState)
+        {
+            case STATE.STATE_IDLE:
+
+                fTimeAcc += Time.deltaTime;
+
+                if(fTimeAcc > .5f)
+                {
+                    eState = STATE.STATE_ARROW_GENERATE;
+
+                    fTimeAcc = 0f;
+                }
+
+                break;
+
+            case STATE.STATE_ARROW_GENERATE:
+
+                Arrow = Instantiate(ArrowPrefab) as ArrowController;
+
+                Arrow.transform.position = this.transform.position;
+
+                eState = STATE.STATE_ARROW;
+
+                break;
+
+            case STATE.STATE_ARROW:
+
+                if(Input.GetKeyDown(KeyCode.Space))
+                {
+                    vDir = Arrow.transform.up;
+
+                    Arrow.Stop();
+
+                    eState = STATE.STATE_GAUGE_GENERATE;
+                }
+
+                break;
+
+            case STATE.STATE_GAUGE_GENERATE:
+
+                Gauge = Instantiate(GaugePrefab) as GaugeController;
+
+                Gauge.transform.position = this.transform.position;
+
+                Gauge.transform.Translate(0f, -.8f, 0f);
+
+                eState = STATE.STATE_GAUGE;
+
+                break;
+
+            case STATE.STATE_GAUGE:
+
+                if (Input.GetKeyDown(KeyCode.Space))
+                {
+                    fPower = Gauge.GetSize() * 800f;
+
+                    Gauge.Stop();
+
+                    eState = STATE.STATE_JUMPING;
+                }
+
+                break;
+
+            case STATE.STATE_JUMPING:
+
+                fTimeAcc += Time.deltaTime;
+
+                if(fTimeAcc > 1f)
+                {
+                    playerRigidbody.AddForce(vDir * fPower);
+                    Destroy(Arrow.gameObject);  
+                    Destroy(Gauge.gameObject);
+
+                    eState = STATE.STATE_FLYING;
+
+                    fTimeAcc = 0f;
+                }
+
+                break;
+
+            case STATE.STATE_FLYING:
+                break;
+
+            case STATE.STATE_LANDING:
+
+                //애니메이터의 Grounded 파라미터를 isGrounded 값으로 갱신
+                animator.SetBool("Grounded", isGrounded);
+
+                if(true == bStart)
+                {
+                    Arrow = Instantiate(ArrowPrefab) as ArrowController;
+
+                    Arrow.transform.position = this.transform.position;
+
+                    eState = STATE.STATE_ARROW;
+
+                    fTimeAcc = 0;
+
+                    bStart = false;
+
+                    break;
+                }
+                else
+                {
+                    fTimeAcc += Time.deltaTime;
+                }
+                if (fTimeAcc > .5f)
+                {
+                    eState = STATE.STATE_IDLE;
+
+                    fTimeAcc = 0f;
+                }
+
+                break;
+        }
     }
 }
