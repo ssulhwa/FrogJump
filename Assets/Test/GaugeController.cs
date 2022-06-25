@@ -4,18 +4,31 @@ using UnityEngine;
 
 public class GaugeController : MonoBehaviour
 {
-    private Transform bar;
+    private enum STATE
+    {
+        STATE_INCREASE,
+        STATE_DECREASE,
+        STATE_END
+    }
 
-    bool bMove = false;
+    private STATE eState;
+
+    private float fCurrentX = 0f;
+
+    // 게이지 속도 : 1f ~ 3f;
+    // public으로 풀면 이상해짐 이유는 몰?루
+    private float fGaugeSpeed = 1f;
+
     bool bStop = false;
 
-    float fMin   = 0.1f;
-    float fCurrentX = 0f;
+    public Transform bar;
 
     // Start is called before the first frame update
     void Start()
     {
         bar = transform.Find("Bar");
+        bar.localScale = new Vector3(0.3f, 1f);
+        eState = STATE.STATE_INCREASE;
     }
 
     // Update is called once per frame
@@ -25,35 +38,42 @@ public class GaugeController : MonoBehaviour
         {
             fCurrentX = bar.localScale.x;
 
-            if(false == bMove)
-            {
-                fCurrentX += Time.deltaTime;
-                bar.localScale = new Vector3(fCurrentX, 1f);
-            }
-            else
-            {
-                fCurrentX -= Time.deltaTime;
-                bar.localScale = new Vector3(fCurrentX, 1f);
-            }
-
-            if (fCurrentX <= fMin && fCurrentX >= fMin - 0.1f)
-            {
-                bMove = false;
-            }
-            if (fCurrentX >= 1f && fCurrentX <= 1.1f)
-            {
-                bMove = true;
-            }
+            GaugeBehavior();
         }
-    }
-
-    public float GetSize()
-    {
-        return fCurrentX;
     }
 
     public void Stop()
     {
         bStop = true;
+    }
+
+    private void GaugeBehavior()
+    {
+        switch (eState)
+        {
+            case STATE.STATE_INCREASE:
+
+                fCurrentX += Time.deltaTime * fGaugeSpeed;
+                bar.localScale = new Vector3(fCurrentX, 1f);
+
+                if(Mathf.Clamp(fCurrentX, 0.01f, 1f) >= 1f)
+                {
+                    eState = STATE.STATE_DECREASE;
+                }
+
+                break;
+
+            case STATE.STATE_DECREASE:
+
+                fCurrentX -= Time.deltaTime * fGaugeSpeed;
+                bar.localScale = new Vector3(fCurrentX, 1f);
+
+                if (Mathf.Clamp(fCurrentX, 0.01f, 1f) <= 0.01f)
+                {
+                    eState = STATE.STATE_INCREASE;
+                }
+
+                break;
+        }
     }
 }

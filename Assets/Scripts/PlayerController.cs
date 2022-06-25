@@ -160,7 +160,7 @@ public class PlayerController : MonoBehaviour
 
                 if (Input.GetKeyDown(KeyCode.Space))
                 {
-                    fPower = Gauge.GetSize() * 800f;
+                    fPower = Gauge.bar.transform.localScale.x * 800f;
 
                     Gauge.Stop();
 
@@ -175,11 +175,17 @@ public class PlayerController : MonoBehaviour
 
                 if(fTimeAcc > 1f)
                 {
+                    playerRigidbody.velocity = Vector2.zero;
+
                     playerRigidbody.AddForce(vDir * fPower);
                     Destroy(Arrow.gameObject);  
                     Destroy(Gauge.gameObject);
 
                     eState = STATE.STATE_FLYING;
+
+                    playerAudio.Play();
+
+                    animator.SetBool("Grounded", isGrounded);
 
                     fTimeAcc = 0f;
                 }
@@ -191,7 +197,6 @@ public class PlayerController : MonoBehaviour
 
             case STATE.STATE_LANDING:
 
-                //애니메이터의 Grounded 파라미터를 isGrounded 값으로 갱신
                 animator.SetBool("Grounded", isGrounded);
 
                 if(true == bStart)
@@ -212,7 +217,7 @@ public class PlayerController : MonoBehaviour
                 {
                     fTimeAcc += Time.deltaTime;
                 }
-                if (fTimeAcc > .5f)
+                if (fTimeAcc > .5f && true == isGrounded)
                 {
                     eState = STATE.STATE_IDLE;
 
