@@ -18,7 +18,7 @@ public class ArrowController : MonoBehaviour
 
     // 화살표 속도 : 1f ~ 3f;
     // public으로 풀면 이상해짐 이유는 몰?루
-    private float fRPS         = 1.5f;
+    private float fRPS         = 2f;
      
     private bool bStop = false;
 
@@ -26,7 +26,7 @@ public class ArrowController : MonoBehaviour
     void Start()
     {
         eState = ROTATE.ROTATE_CW;
-        transform.Rotate(0, 0, 350);
+        transform.Rotate(0, 0, 0);    
     }
     
     // Update is called once per frame
@@ -54,7 +54,7 @@ public class ArrowController : MonoBehaviour
 
                 transform.Rotate(0, 0, fRotateSpeed * -1);
 
-                if(Mathf.Clamp(fAngleZ, 271f, 359f) <= 271f)
+                if (fAngleZ >= 275f && fAngleZ <= 280f)
                 {
                     eState = ROTATE.ROTATE_CCW;
                 }
@@ -65,7 +65,7 @@ public class ArrowController : MonoBehaviour
 
                 transform.Rotate(0, 0, fRotateSpeed);
 
-                if (Mathf.Clamp(fAngleZ, 271f, 359f) >= 359f)
+                if (fAngleZ >= 80f && fAngleZ <= 85f)
                 {
                     eState = ROTATE.ROTATE_CW;
                 }

@@ -112,7 +112,7 @@ public class PlayerController : MonoBehaviour
 
                 fTimeAcc += Time.deltaTime;
 
-                if(fTimeAcc > .5f)
+                if(fTimeAcc > .2f)
                 {
                     eState = STATE.STATE_ARROW_GENERATE;
 
@@ -136,6 +136,10 @@ public class PlayerController : MonoBehaviour
                 if(Input.GetKeyDown(KeyCode.Space))
                 {
                     vDir = Arrow.transform.up;
+
+                    Vector3.Normalize(vDir);
+
+                    transform.right = new Vector3(vDir.x, 0f, 0f);
 
                     Arrow.Stop();
 
@@ -173,7 +177,7 @@ public class PlayerController : MonoBehaviour
 
                 fTimeAcc += Time.deltaTime;
 
-                if(fTimeAcc > 1f)
+                if(fTimeAcc > .1f)
                 {
                     playerRigidbody.velocity = Vector2.zero;
 
@@ -185,6 +189,7 @@ public class PlayerController : MonoBehaviour
 
                     playerAudio.Play();
 
+                    isGrounded = false;
                     animator.SetBool("Grounded", isGrounded);
 
                     fTimeAcc = 0f;

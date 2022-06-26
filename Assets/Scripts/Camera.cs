@@ -15,7 +15,7 @@ public class Camera : MonoBehaviour
     void Update()
     {
         CameraVec.z = PlayerObject.transform.position.z - 10f;
-        CameraVec.x = PlayerObject.transform.position.x;
+        CameraVec.y = PlayerObject.transform.position.y;
         transform.position = CameraVec;
         
         
