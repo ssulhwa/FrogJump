@@ -19,9 +19,10 @@ public class PlayerController : MonoBehaviour
 
     private STATE eState;
     private Vector2 vDir;
-    private float fPower   = 0f;
-    private float fTimeAcc = 0f;
-    private bool  bStart   = false;
+    private float fPower      = 0f;
+    private float fTimeAcc    = 0f;
+    private int   iReflectCnt = 0;
+    private bool  bStart      = false;
 
     public ArrowController ArrowPrefab;
     public ArrowController Arrow;
@@ -88,6 +89,7 @@ public class PlayerController : MonoBehaviour
         if(collision.contacts[0].normal.y > 0.7f)
         {
             isGrounded = true;      //∂•¿ßø° ¿÷¥Ÿ
+            iReflectCnt = 0;
             eState = STATE.STATE_LANDING;
         }
     }
@@ -95,12 +97,46 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionExit2D(Collision2D collision)
     {
         isGrounded = false;
+
+
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Dead" && !isDead)
         {
             Die();
+        }     
+        if(collision.tag == "ReflectR" || collision.tag == "ReflectL")
+        {
+            Vector3 vNormal;
+
+            if(collision.tag == "ReflectR")
+            {
+                vNormal = new Vector3(-1f, 0f, 0f);
+            }
+            else
+            {
+                vNormal = new Vector3(1f, 0f, 0f);
+            }
+
+            if(iReflectCnt == 1)
+            {
+                vDir.y *= -1;
+            }
+
+            Vector3 vReflect = Vector3.Reflect(vDir, vNormal);
+
+            Vector3.Normalize(vDir);
+
+            transform.right = new Vector3(-vDir.x, 0f, 0f);
+
+            playerRigidbody.velocity = Vector2.zero;
+
+            playerRigidbody.AddForce(vReflect * fPower);
+
+            vDir = vReflect;
+
+            ++iReflectCnt;
         }
     }
 
@@ -204,7 +240,9 @@ public class PlayerController : MonoBehaviour
 
                 animator.SetBool("Grounded", isGrounded);
 
-                if(true == bStart)
+                playerRigidbody.velocity = Vector2.zero;
+
+                if (true == bStart)
                 {
                     Arrow = Instantiate(ArrowPrefab) as ArrowController;
 

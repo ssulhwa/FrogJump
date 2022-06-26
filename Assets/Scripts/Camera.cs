@@ -4,9 +4,10 @@ using UnityEngine;
 
 public class Camera : MonoBehaviour
 {
-    public GameObject PlayerObject;
+    public PlayerController PlayerObject;
 
     Vector3 CameraVec;
+
     void Start()
     {
     }
@@ -14,12 +15,16 @@ public class Camera : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        CameraVec.z = PlayerObject.transform.position.z - 10f;
-        CameraVec.y = PlayerObject.transform.position.y;
-        transform.position = CameraVec;
-        
-        
+        if(PlayerObject.transform.position.y >= 6f)
+        {
+            if(PlayerObject.transform.position.y > transform.position.y)
+            {
+                transform.Translate(0f, Time.deltaTime * 3f, 0f);
+            }
+        }
 
-        
+        //CameraVec.z = PlayerObject.transform.position.z - 10f;
+        //CameraVec.y = PlayerObject.transform.position.y + 8f;
+        //transform.position = CameraVec;   
     }
 }

@@ -56,7 +56,7 @@ public class GaugeController : MonoBehaviour
                 fCurrentX += Time.deltaTime * fGaugeSpeed;
                 bar.localScale = new Vector3(fCurrentX, 1f);
 
-                if(Mathf.Clamp(fCurrentX, 0.01f, 1f) >= 1f)
+                if(Mathf.Clamp(fCurrentX, 0.1f, 1f) >= 1f)
                 {
                     eState = STATE.STATE_DECREASE;
                 }
@@ -68,7 +68,7 @@ public class GaugeController : MonoBehaviour
                 fCurrentX -= Time.deltaTime * fGaugeSpeed;
                 bar.localScale = new Vector3(fCurrentX, 1f);
 
-                if (Mathf.Clamp(fCurrentX, 0.01f, 1f) <= 0.01f)
+                if (Mathf.Clamp(fCurrentX, 0.1f, 1f) <= 0.1f)
                 {
                     eState = STATE.STATE_INCREASE;
                 }
