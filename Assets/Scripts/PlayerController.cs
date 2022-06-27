@@ -112,6 +112,8 @@ public class PlayerController : MonoBehaviour
         }     
         if(collision.tag == "ReflectR" || collision.tag == "ReflectL")
         {
+            playerAudio.Play();
+
             Vector3 vNormal;
 
             if(collision.tag == "ReflectR")
