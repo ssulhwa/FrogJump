@@ -53,6 +53,8 @@ public class PlayerController : MonoBehaviour
         eState = STATE.STATE_FLYING;
 
         bStart = true;
+
+        Time.timeScale = 1;
     }
 
     // Update is called once per frame
@@ -60,6 +62,8 @@ public class PlayerController : MonoBehaviour
     {
         if (isDead)
         {
+            Time.timeScale = 0;
+
             return;
         }
 
