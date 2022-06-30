@@ -24,7 +24,10 @@ public class ObjectGenerator : MonoBehaviour
 
     public float HeightInterval = 4f;
     public int   Floor          = 5;
-    
+    public float XInterval      = 0.5f;
+
+    Vector3 PrevPos;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -32,7 +35,20 @@ public class ObjectGenerator : MonoBehaviour
         {
             BlockGenerater();
 
-            Block.transform.position = new Vector3(Random.Range(-5f, 5f), 1f + HeightInterval * i);
+            if (i == 0)
+            { 
+                Block.transform.position = new Vector3(Random.Range(-5f, 5f), 1f + HeightInterval * i);
+            }
+            else
+            {
+                do
+                {
+                    Block.transform.position = new Vector3(Random.Range(-5f, 5f), 1f + HeightInterval * i);
+                }
+                while (Mathf.Abs(PrevPos.x - Block.transform.position.x) < XInterval);
+            }
+
+            PrevPos = Block.transform.position;
         }
     }
 

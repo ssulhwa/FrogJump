@@ -63,7 +63,7 @@ public class PlayerController : MonoBehaviour
         if (isDead)
         {
             Time.timeScale = 0;
-
+            
             return;
         }
 
@@ -131,7 +131,7 @@ public class PlayerController : MonoBehaviour
             }
 
             Vector3 vReflect = Vector3.Reflect(vDir, vNormal);
-
+            
             Vector3.Normalize(vDir);
 
             transform.right = new Vector3(-vDir.x, 0f, 0f);
