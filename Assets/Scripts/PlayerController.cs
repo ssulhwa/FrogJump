@@ -24,6 +24,8 @@ public class PlayerController : MonoBehaviour
     private int   iReflectCnt = 0;
     private bool  bStart      = false;
 
+    public float PowerDelta   = 1f;
+
     public ArrowController ArrowPrefab;
     public ArrowController Arrow;
 
@@ -175,7 +177,7 @@ public class PlayerController : MonoBehaviour
 
             case STATE.STATE_ARROW:
 
-                if(Input.GetKeyDown(KeyCode.Space))
+                if(Input.GetMouseButtonDown(0))
                 {
                     vDir = Arrow.transform.up;
 
@@ -204,9 +206,9 @@ public class PlayerController : MonoBehaviour
 
             case STATE.STATE_GAUGE:
 
-                if (Input.GetKeyDown(KeyCode.Space))
+                if (Input.GetMouseButtonDown(0))
                 {
-                    fPower = Gauge.bar.transform.localScale.x * 800f;
+                    fPower = Gauge.bar.transform.localScale.x * 800f * PowerDelta;
 
                     Gauge.Stop();
 
