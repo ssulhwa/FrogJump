@@ -36,7 +36,7 @@ public class GameManager : MonoBehaviour
     {
         //게임오버 상태에서 마우스 좌클릭을 누르면 현재 씬 재시작
         if (isGameover && Input.GetMouseButtonDown(0))
-            SceneManager.LoadScene(0); //0번 씬 로드
+            SceneManager.LoadScene(1); //1번 씬 로드
 
         //점수증가
 
