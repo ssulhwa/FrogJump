@@ -585,7 +585,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e65811502f09864b946d2d4edc5d849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PowerDelta: 1.14
+  PowerDelta: 1.12
   ArrowPrefab: {fileID: 4718179624292292054, guid: 99dc936ef6c5d6c47a15c70a72d58d34, type: 3}
   Arrow: {fileID: 0}
   GaugePrefab: {fileID: 4176854160982509948, guid: 470141fbd644cef4fa630e8cb72c5e80, type: 3}

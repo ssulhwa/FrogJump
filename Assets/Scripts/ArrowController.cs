@@ -22,6 +22,8 @@ public class ArrowController : MonoBehaviour
      
     private bool bStop = false;
 
+    private Vector3 vPlayerPos;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -37,7 +39,26 @@ public class ArrowController : MonoBehaviour
             fRotateSpeed = Time.deltaTime * 90 * fRPS;
             fAngleZ      = transform.eulerAngles.z;
 
-            ArrowBehavior();
+            //ArrowBehavior();
+            if (Input.GetMouseButton(0))
+            {
+                Vector3 vMouseWorldPos = UnityEngine.Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                Vector3 vDir = Vector3.Normalize(vMouseWorldPos - transform.position);
+
+                Vector3 vLook = new Vector3(0f, 0f, 1f);
+                Vector3 vRight = Vector3.Cross(vDir, vLook);
+
+                transform.up = vDir;
+                transform.right = vRight;
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                if (fAngleZ > 80f && fAngleZ < 280f)
+                {
+                    transform.up = new Vector3(0f, 1f, 0f);
+                    transform.right = new Vector3(1f, 0f, 0f);
+                }
+            }
         }
     }
 
@@ -72,5 +93,10 @@ public class ArrowController : MonoBehaviour
 
                 break;
         }
+    }
+
+    public void SetPlayerPos(Vector3 playerPos)
+    {
+        vPlayerPos = playerPos;
     }
 }

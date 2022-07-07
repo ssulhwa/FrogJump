@@ -69,7 +69,8 @@ public class PlayerController : MonoBehaviour
             return;
         }
 
-        PlayerBehavior();
+        //PlayerBehavior_A();
+        PlayerBehavior_B();
     }
 
     private void Die()
@@ -148,7 +149,7 @@ public class PlayerController : MonoBehaviour
         }
     }
 
-    private void PlayerBehavior()
+    private void PlayerBehavior_A()
     {
         switch (eState)
         {
@@ -227,6 +228,139 @@ public class PlayerController : MonoBehaviour
 
                     playerRigidbody.AddForce(vDir * fPower);
                     Destroy(Arrow.gameObject);  
+                    Destroy(Gauge.gameObject);
+
+                    eState = STATE.STATE_FLYING;
+
+                    playerAudio.Play();
+
+                    isGrounded = false;
+                    animator.SetBool("Grounded", isGrounded);
+
+                    fTimeAcc = 0f;
+                }
+
+                break;
+
+            case STATE.STATE_FLYING:
+                break;
+
+            case STATE.STATE_LANDING:
+
+                animator.SetBool("Grounded", isGrounded);
+
+                playerRigidbody.velocity = Vector2.zero;
+
+                if (true == bStart)
+                {
+                    Arrow = Instantiate(ArrowPrefab) as ArrowController;
+
+                    Arrow.transform.position = this.transform.position;
+
+                    eState = STATE.STATE_ARROW;
+
+                    fTimeAcc = 0;
+
+                    bStart = false;
+
+                    break;
+                }
+                else
+                {
+                    fTimeAcc += Time.deltaTime;
+                }
+                if (fTimeAcc > .5f && true == isGrounded)
+                {
+                    eState = STATE.STATE_IDLE;
+
+                    fTimeAcc = 0f;
+                }
+
+                break;
+        }
+    }
+
+    private void PlayerBehavior_B()
+    {
+        switch (eState)
+        {
+            case STATE.STATE_IDLE:
+
+                fTimeAcc += Time.deltaTime;
+
+                if (fTimeAcc > .2f)
+                {
+                    eState = STATE.STATE_ARROW_GENERATE;
+
+                    fTimeAcc = 0f;
+                }
+
+                break;
+
+            case STATE.STATE_ARROW_GENERATE:
+
+                Arrow = Instantiate(ArrowPrefab) as ArrowController;
+
+                Arrow.transform.position = this.transform.position;
+
+                eState = STATE.STATE_ARROW;
+
+                break;
+
+            case STATE.STATE_ARROW:
+
+                Arrow.SetPlayerPos(transform.position);
+
+                if (Input.GetMouseButtonUp(0))
+                {
+                    vDir = Arrow.transform.up;
+
+                    Vector3.Normalize(vDir);
+
+                    transform.right = new Vector3(vDir.x, 0f, 0f);
+
+                    Arrow.Stop();
+
+                    eState = STATE.STATE_GAUGE_GENERATE;
+                }
+
+                break;
+
+            case STATE.STATE_GAUGE_GENERATE:
+
+                Gauge = Instantiate(GaugePrefab) as GaugeController;
+
+                Gauge.transform.position = this.transform.position;
+
+                Gauge.transform.Translate(0f, -.8f, 0f);
+
+                eState = STATE.STATE_GAUGE;
+
+                break;
+
+            case STATE.STATE_GAUGE:
+
+                if (Input.GetMouseButtonDown(0))
+                {
+                    fPower = Gauge.bar.transform.localScale.x * 800f * PowerDelta;
+
+                    Gauge.Stop();
+
+                    eState = STATE.STATE_JUMPING;
+                }
+
+                break;
+
+            case STATE.STATE_JUMPING:
+
+                fTimeAcc += Time.deltaTime;
+
+                if (fTimeAcc > .1f)
+                {
+                    playerRigidbody.velocity = Vector2.zero;
+
+                    playerRigidbody.AddForce(vDir * fPower);
+                    Destroy(Arrow.gameObject);
                     Destroy(Gauge.gameObject);
 
                     eState = STATE.STATE_FLYING;
