@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
         STATE_JUMPING,
         STATE_FLYING,
         STATE_LANDING,
+        STATE_DIE,
         STATE_END
     };
 
@@ -26,11 +27,14 @@ public class PlayerController : MonoBehaviour
 
     public float PowerDelta   = 1f;
 
-    public ArrowController ArrowPrefab;
-    public ArrowController Arrow;
+    public  ArrowController ArrowPrefab;
+    private ArrowController Arrow;
 
-    public GaugeController GaugePrefab;
-    public GaugeController Gauge;
+    public  GaugeController GaugePrefab;
+    private GaugeController Gauge;
+
+    public  GameOverMenu GameOverPagePrefab;
+    private GameOverMenu GameOverPage;
 
     /////////////////////////////////////////////////////////////////
 
@@ -57,6 +61,11 @@ public class PlayerController : MonoBehaviour
         bStart = true;
 
         Time.timeScale = 1;
+
+        if(null != GameOverPage)
+        {
+            Destroy(GameOverPage.gameObject);
+        }
     }
 
     // Update is called once per frame
@@ -73,23 +82,6 @@ public class PlayerController : MonoBehaviour
         PlayerBehavior_B();
     }
 
-    private void Die()
-    {
-        //오디오 소스에 할당된 오디오 클립을 deathClip 으로 변경
-        playerAudio.clip = deathClip;
-
-        playerAudio.Play();
-
-        //속도를 제로로 변경
-        playerRigidbody.velocity = Vector2.zero;
-
-        //사망 상태를 true 변경
-        isDead = true;
-
-        //게임 매니저의 게임오버 처리
-        GameManager.instance.OnplayerDead();
-    }
-
     private void OnCollisionEnter2D(Collision2D collision)
     {
         //첫번째로 충돌한 노말벡터의 y축 방향이 0.7이상일 경우(위쪽 방향일 경우)
@@ -104,14 +96,12 @@ public class PlayerController : MonoBehaviour
     private void OnCollisionExit2D(Collision2D collision)
     {
         isGrounded = false;
-
-
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.tag == "Dead" && !isDead)
         {
-            Die();
+            eState = STATE.STATE_DIE;
         }     
         if(collision.tag == "ReflectR" || collision.tag == "ReflectL")
         {
@@ -277,6 +267,24 @@ public class PlayerController : MonoBehaviour
                 }
 
                 break;
+
+            case STATE.STATE_DIE:
+
+                //오디오 소스에 할당된 오디오 클립을 deathClip 으로 변경
+                playerAudio.clip = deathClip;
+
+                playerAudio.Play();
+
+                //속도를 제로로 변경
+                playerRigidbody.velocity = Vector2.zero;
+
+                //사망 상태를 true 변경
+                isDead = true;
+
+                //게임 매니저의 게임오버 처리
+                GameManager.instance.OnplayerDead();
+
+                break;
         }
     }
 
@@ -313,6 +321,8 @@ public class PlayerController : MonoBehaviour
 
                 if (Input.GetMouseButtonUp(0))
                 {
+                    Arrow.AngleCorrection();
+
                     vDir = Arrow.transform.up;
 
                     Vector3.Normalize(vDir);
@@ -408,6 +418,30 @@ public class PlayerController : MonoBehaviour
 
                     fTimeAcc = 0f;
                 }
+
+                break;
+
+            case STATE.STATE_DIE:
+
+                //오디오 소스에 할당된 오디오 클립을 deathClip 으로 변경
+                playerAudio.clip = deathClip;
+
+                playerAudio.Play();
+
+                //속도를 제로로 변경
+                playerRigidbody.velocity = Vector2.zero;
+
+                //사망 상태를 true 변경
+                isDead = true;
+
+                //게임 매니저의 게임오버 처리
+                GameManager.instance.OnplayerDead();
+
+                GameOverPage = Instantiate(GameOverPagePrefab) as GameOverMenu;
+
+                Vector3 vPos = new Vector3(0f, transform.position.y + 20f, 0f);
+
+                GameOverPage.transform.position = vPos;
 
                 break;
         }

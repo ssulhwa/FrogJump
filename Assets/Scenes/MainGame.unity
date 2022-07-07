@@ -587,9 +587,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   PowerDelta: 1.12
   ArrowPrefab: {fileID: 4718179624292292054, guid: 99dc936ef6c5d6c47a15c70a72d58d34, type: 3}
-  Arrow: {fileID: 0}
   GaugePrefab: {fileID: 4176854160982509948, guid: 470141fbd644cef4fa630e8cb72c5e80, type: 3}
-  Gauge: {fileID: 0}
+  GameOverPagePrefab: {fileID: 3564447245724738623, guid: ff9b137ca63f49148bb496285eb37544, type: 3}
   speed: 2
   deathClip: {fileID: 8300000, guid: 724131bc8a7f34041bb9f1701f0cb58d, type: 3}
 --- !u!61 &920060679
@@ -792,7 +791,7 @@ GameObject:
   - component: {fileID: 1485129304}
   - component: {fileID: 1485129303}
   m_Layer: 5
-  m_Name: Image
+  m_Name: ScoreBoard
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -39,8 +39,6 @@ public class GameManager : MonoBehaviour
             SceneManager.LoadScene(1); //1번 씬 로드
 
         //점수증가
-
-
     }
 
     public void AddScore(int newScore)
