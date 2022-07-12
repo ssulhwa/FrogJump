@@ -79,7 +79,8 @@ public class PlayerController : MonoBehaviour
         }
 
         //PlayerBehavior_A();
-        PlayerBehavior_B();
+        //PlayerBehavior_B();
+        PlayerBehavior_C();
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
@@ -439,8 +440,143 @@ public class PlayerController : MonoBehaviour
 
                 GameOverPage = Instantiate(GameOverPagePrefab) as GameOverMenu;
 
-                Vector3 vPos = new Vector3(0f, transform.position.y + 20f, 0f);
+                Vector3 vPos = new Vector3(0f, transform.position.y + 10f, 0f);
+                
+                GameOverPage.transform.position = vPos;
 
+                break;
+        }
+    }
+
+    private void PlayerBehavior_C()
+    {
+        switch (eState)
+        {
+            case STATE.STATE_IDLE:
+
+                fTimeAcc += Time.deltaTime;
+
+                if (fTimeAcc > .2f)
+                {
+                    eState = STATE.STATE_ARROW_GENERATE;
+
+                    fTimeAcc = 0f;
+                }
+
+                break;
+
+            case STATE.STATE_ARROW_GENERATE:
+
+                Arrow = Instantiate(ArrowPrefab) as ArrowController;
+
+                Arrow.transform.position = this.transform.position;
+
+                eState = STATE.STATE_ARROW;
+
+                break;
+
+            case STATE.STATE_ARROW:
+
+                Arrow.SetPlayerPos(transform.position);
+
+                if (Input.GetMouseButtonUp(0))
+                {
+                    Arrow.AngleCorrection();
+
+                    vDir = Arrow.transform.up;
+
+                    Vector3.Normalize(vDir);
+
+                    transform.right = new Vector3(vDir.x, 0f, 0f);
+
+                    Arrow.Stop();
+
+                    fPower = Arrow.transform.localScale.y * 800f * PowerDelta;
+
+                    eState = STATE.STATE_JUMPING;
+                }
+
+                break;
+
+            case STATE.STATE_JUMPING:
+
+                fTimeAcc += Time.deltaTime;
+
+                if (fTimeAcc > .1f)
+                {
+                    playerRigidbody.velocity = Vector2.zero;
+
+                    playerRigidbody.AddForce(vDir * fPower);
+                    Destroy(Arrow.gameObject);
+
+                    eState = STATE.STATE_FLYING;
+
+                    playerAudio.Play();
+
+                    isGrounded = false;
+                    animator.SetBool("Grounded", isGrounded);
+
+                    fTimeAcc = 0f;
+                }
+
+                break;
+
+            case STATE.STATE_FLYING:
+                break;
+
+            case STATE.STATE_LANDING:
+
+                animator.SetBool("Grounded", isGrounded);
+
+                playerRigidbody.velocity = Vector2.zero;
+
+                if (true == bStart)
+                {
+                    Arrow = Instantiate(ArrowPrefab) as ArrowController;
+
+                    Arrow.transform.position = this.transform.position;
+
+                    eState = STATE.STATE_ARROW;
+
+                    fTimeAcc = 0;
+
+                    bStart = false;
+
+                    break;
+                }
+                else
+                {
+                    fTimeAcc += Time.deltaTime;
+                }
+                if (fTimeAcc > .5f && true == isGrounded)
+                {
+                    eState = STATE.STATE_IDLE;
+
+                    fTimeAcc = 0f;
+                }
+
+                break;
+
+            case STATE.STATE_DIE:
+
+                //오디오 소스에 할당된 오디오 클립을 deathClip 으로 변경
+                playerAudio.clip = deathClip;
+
+                playerAudio.Play();
+
+                //속도를 제로로 변경
+                playerRigidbody.velocity = Vector2.zero;
+
+                //사망 상태를 true 변경
+                isDead = true;
+
+                //게임 매니저의 게임오버 처리
+                GameManager.instance.OnplayerDead();
+
+                GameOverPage = Instantiate(GameOverPagePrefab) as GameOverMenu;
+
+                Vector3 vPos = new Vector3(0f, transform.position.y + 10f, 0f);
+                
                 GameOverPage.transform.position = vPos;
 
                 break;

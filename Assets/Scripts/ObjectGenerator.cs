@@ -107,7 +107,7 @@ public class ObjectGenerator : MonoBehaviour
 
             if (i == 0)
             {
-                Block.transform.position = new Vector3(Random.Range(-5f, 5f), 1f + HeightInterval * i);
+                Block.transform.position = new Vector3(Random.Range(-5f, 5f), 5.1f + HeightInterval * i);
             }
             else
             {
@@ -152,7 +152,7 @@ public class ObjectGenerator : MonoBehaviour
                     }
                 }
 
-                Block.transform.position = new Vector3(fRandomX, 1f + HeightInterval * i);
+                Block.transform.position = new Vector3(fRandomX, 5.1f + HeightInterval * i);
             }
 
             if (Block.transform.position.x > 0)
