@@ -85,14 +85,14 @@ public class ArrowController : MonoBehaviour
 
             float fSize = Vector3.Magnitude(transform.position - vMouseWorldPos);
 
-            float fNewSize = Mathf.Clamp(fSize - 10f, 0.1f, 1.0f);
+            float fNewSize = Mathf.Clamp((fSize - 10f) * 3f, 0.1f, 1.0f);
 
             Vector3 vDir = Vector3.Normalize(transform.position - vMouseWorldPos);
 
-            Vector3 vLook = new Vector3(0f, 0f, 1f);
+            Vector3 vLook  = new Vector3(0f, 0f, 1f);
             Vector3 vRight = Vector3.Cross(vDir, vLook);
             
-            transform.up = vDir;
+            transform.up    = vDir;
             transform.right = vRight;
             
             transform.localScale = new Vector3(1f, fNewSize, 1f);
