@@ -11,7 +11,7 @@ public class ObjectGenerator : MonoBehaviour
 
     private BlockController Block;
     
-    public enum BLOCKSIZE
+    private enum BLOCKSIZE
     {
         Various,
         _1x,
@@ -25,91 +25,72 @@ public class ObjectGenerator : MonoBehaviour
         LEFT
     }
 
-    public BLOCKSIZE    BlockSize    = BLOCKSIZE.Various;
+    private Queue<BlockController> Blocks;
 
-    public float HeightInterval = 4f;
-    public int   Floor          = 5;
+    private BLOCKSIZE GeneratedBlockSize;
+    private DIR       PrevDir;
+    private bool      isRandom        = false;
+    private int       iFloor          = 6;
+    private float     fPrevX          = 0f;
+    private float     fHeightInterval = 5f;
+    private float     fGroundPos      = -0.4f;
 
-    BLOCKSIZE GeneratedBlockSize;
-    float     PrevX;
-    DIR       PrevDir;
-
-    // Start is called before the first frame update
     void Start()
     {
-        Generator_A();
-        //Generator_B();
+        Blocks = new Queue<BlockController>();
+
+        BlockTest();
+
+        //StaticGenerator();
     }
 
-    // Update is called once per frame
     void Update()
     {
+        //DynamicGenerator();
+    }
+
+    void BlockTest()
+    {
+        Block = Instantiate(Block_1x) as BlockController;
+        Block.transform.position = new Vector3(-2.5f, fHeightInterval - 0.9f);
     }
 
     void BlockGenerator()
     {
-        switch (BlockSize)
+        float fRandomSize = Random.Range(0f, 10f);
+
+        if (fRandomSize <= 2.5f)
         {
-            case BLOCKSIZE.Various:
-
-                int iRandomSize = (int)Random.Range(0f, 10f);
-
-                if (iRandomSize < 4)
-                {
-                    Block = Instantiate(Block_1x) as BlockController;
-                    GeneratedBlockSize = BLOCKSIZE._1x;
-                }
-                else if (iRandomSize < 7)
-                {
-                    Block = Instantiate(Block_2x) as BlockController;
-                    GeneratedBlockSize = BLOCKSIZE._2x;
-                }
-                else if (iRandomSize < 9)
-                {
-                    Block = Instantiate(Block_3x) as BlockController;
-                    GeneratedBlockSize = BLOCKSIZE._3x;
-                }
-                else
-                {
-                    Block = Instantiate(Block_4x) as BlockController;
-                    GeneratedBlockSize = BLOCKSIZE._4x;
-                }
-
-                break;
-
-            case BLOCKSIZE._1x:
-                Block = Instantiate(Block_1x) as BlockController;
-                GeneratedBlockSize = BLOCKSIZE._1x;
-                break;
-
-            case BLOCKSIZE._2x:
-                Block = Instantiate(Block_2x) as BlockController;
-                GeneratedBlockSize = BLOCKSIZE._2x;
-                break;
-
-            case BLOCKSIZE._3x:
-                Block = Instantiate(Block_3x) as BlockController;
-                GeneratedBlockSize = BLOCKSIZE._3x;
-                break;
-
-            case BLOCKSIZE._4x:
-                Block = Instantiate(Block_4x) as BlockController;
-                GeneratedBlockSize = BLOCKSIZE._4x;
-                break;
+            Block = Instantiate(Block_1x) as BlockController;
+            GeneratedBlockSize = BLOCKSIZE._1x;
+        }
+        else if (fRandomSize <= 5.5f)
+        {
+            Block = Instantiate(Block_2x) as BlockController;
+            GeneratedBlockSize = BLOCKSIZE._2x;
+        }
+        else if (fRandomSize <= 9f)
+        {
+            Block = Instantiate(Block_3x) as BlockController;
+            GeneratedBlockSize = BLOCKSIZE._3x;
+        }
+        else
+        {
+            Block = Instantiate(Block_4x) as BlockController;
+            GeneratedBlockSize = BLOCKSIZE._4x;
         }
     }
 
-    void Generator_A()
+    #region DYNAMIC_GENERATOR
+    private void DynamicGenerator()
     {
-        for (int i = 0; i < Floor; ++i)
+        if(null == Blocks.Peek())
         {
+            Blocks.Dequeue();
+
             BlockGenerator();
 
-            if (i == 0)
-            {
-                Block.transform.position = new Vector3(Random.Range(-5f, 5f), 5.1f + HeightInterval * i);
-            }
-            else
+            if(false == isRandom)
             {
                 float fRandomX = 0f;
 
@@ -152,40 +133,125 @@ public class ObjectGenerator : MonoBehaviour
                     }
                 }
 
-                Block.transform.position = new Vector3(fRandomX, 5.1f + HeightInterval * i);
-            }
+                Block.transform.position = new Vector3(fRandomX, fHeightInterval * iFloor + fHeightInterval + fGroundPos);
 
-            if (Block.transform.position.x > 0)
-            {
-                PrevDir = DIR.RIGHT;
-            }
-            else
-            {
-                PrevDir = DIR.LEFT;
-            }
-        }
-    }
+                if (Block.transform.position.x > 0)
+                {
+                    PrevDir = DIR.RIGHT;
+                }
+                else
+                {
+                    PrevDir = DIR.LEFT;
+                }
 
-    void Generator_B()
-    {
-        for (int i = 0; i < Floor; ++i)
-        {
-            BlockGenerator();
-
-            if (i == 0)
-            {
-                Block.transform.position = new Vector3(Random.Range(-5f, 5f), 1f + HeightInterval * i);
             }
             else
             {
                 do
                 {
-                    Block.transform.position = new Vector3(Random.Range(-5f, 5f), 1f + HeightInterval * i);
+                    Block.transform.position = new Vector3(Random.Range(-5f, 5f), fHeightInterval * iFloor + fHeightInterval + fGroundPos);
                 }
-                while (Mathf.Abs(PrevX - Block.transform.position.x) < 2f);
+                while (Mathf.Abs(fPrevX - Block.transform.position.x) < 2f);
+
+                fPrevX = Block.transform.position.x;
             }
 
-            PrevX = Block.transform.position.x;
+            ++iFloor;
+
+            Blocks.Enqueue(Block);
+
         }
     }
+    #endregion
+
+    #region STATIC_GENERATOR
+    void StaticGenerator()
+    {
+        for (int i = 0; i < iFloor; ++i)
+        {
+            BlockGenerator();
+
+            if(false == isRandom)
+            {
+                if (i == 0)
+                {
+                    Block.transform.position = new Vector3(Random.Range(-5f, 5f), fHeightInterval * i + fHeightInterval + fGroundPos);
+                }
+                else
+                {
+                    float fRandomX = 0f;
+
+                    if (PrevDir == DIR.RIGHT)
+                    {
+                        if (GeneratedBlockSize == BLOCKSIZE._1x)
+                        {
+                            fRandomX = Random.Range(-5f, -0.7f);
+                        }
+                        else if (GeneratedBlockSize == BLOCKSIZE._2x)
+                        {
+                            fRandomX = Random.Range(-4.25f, -1.5f);
+                        }
+                        else if (GeneratedBlockSize == BLOCKSIZE._3x)
+                        {
+                            fRandomX = Random.Range(-3.55f, -2.10f);
+                        }
+                        else
+                        {
+                            fRandomX = -2.85f;
+                        }
+                    }
+                    else
+                    {
+                        if (GeneratedBlockSize == BLOCKSIZE._1x)
+                        {
+                            fRandomX = Random.Range(0.7f, 5f);
+                        }
+                        else if (GeneratedBlockSize == BLOCKSIZE._2x)
+                        {
+                            fRandomX = Random.Range(1.5f, 4.25f);
+                        }
+                        else if (GeneratedBlockSize == BLOCKSIZE._3x)
+                        {
+                            fRandomX = Random.Range(2.1f, 3.55f);
+                        }
+                        else
+                        {
+                            fRandomX = 2.85f;
+                        }
+                    }
+
+                    Block.transform.position = new Vector3(fRandomX, fHeightInterval * i + fHeightInterval + fGroundPos);
+                }
+
+                if (Block.transform.position.x > 0)
+                {
+                    PrevDir = DIR.RIGHT;
+                }
+                else
+                {
+                    PrevDir = DIR.LEFT;
+                }
+            }
+            else
+            {
+                if (i == 0)
+                {
+                    Block.transform.position = new Vector3(Random.Range(-5f, 5f), fHeightInterval * i + fHeightInterval + fGroundPos);
+                }
+                else
+                {
+                    do
+                    {
+                        Block.transform.position = new Vector3(Random.Range(-5f, 5f), fHeightInterval * i + fHeightInterval + fGroundPos);
+                    }
+                    while (Mathf.Abs(fPrevX - Block.transform.position.x) < 2f);
+                }
+
+                fPrevX = Block.transform.position.x;
+            }
+
+            Blocks.Enqueue(Block);
+        }
+    }
+    #endregion
 }

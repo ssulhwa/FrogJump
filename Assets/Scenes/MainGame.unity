@@ -447,9 +447,6 @@ MonoBehaviour:
   Block_2x: {fileID: 4436422802617203264, guid: f033bdc73c4336f4ebd53e5ce9804887, type: 3}
   Block_3x: {fileID: 2730666650440334116, guid: fb5aee5e96c4534419e3ab1a9eaca50f, type: 3}
   Block_4x: {fileID: 1189840203759353935, guid: 27a48eeeee9260848a712a9d8a35183c, type: 3}
-  BlockSize: 0
-  HeightInterval: 5
-  Floor: 30
 --- !u!4 &271838563
 Transform:
   m_ObjectHideFlags: 0
@@ -10861,7 +10858,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 920060670}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0.301, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 5, y: 5, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -11017,11 +11014,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0e65811502f09864b946d2d4edc5d849, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PowerDelta: 1.12
   ArrowPrefab: {fileID: 4718179624292292054, guid: 99dc936ef6c5d6c47a15c70a72d58d34, type: 3}
-  GaugePrefab: {fileID: 4176854160982509948, guid: 470141fbd644cef4fa630e8cb72c5e80, type: 3}
-  GameOverPagePrefab: {fileID: 1471642243718552653, guid: e1f4b7a9aa34f4b4098100c9a0b0d0aa, type: 3}
-  speed: 2
   deathClip: {fileID: 8300000, guid: 724131bc8a7f34041bb9f1701f0cb58d, type: 3}
 --- !u!61 &920060679
 BoxCollider2D:
@@ -21795,7 +21788,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1618050024}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.26, y: -0.204, z: 0}
+  m_LocalPosition: {x: 0.26, y: -0.4, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
