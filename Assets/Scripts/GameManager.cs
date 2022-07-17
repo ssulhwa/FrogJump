@@ -12,7 +12,7 @@ public class GameManager : MonoBehaviour
 
     public bool isGameover = false;         //게임오버 상태
     public TextMeshProUGUI scoreText;              //점수를 출력할 UI텍스트
-    //public GameObject gameOverUI;           //게임오버 시 활성화할 UI게임 오브젝트
+    public GameObject gameOverUI;           //게임오버 시 활성화할 UI게임 오브젝트
 
     private int score = 0;                  //게임 점수
     private void Awake()
@@ -31,12 +31,9 @@ public class GameManager : MonoBehaviour
     {
     }
 
-    // Update is called once per frame
     void Update()
     {
-        //게임오버 상태에서 마우스 좌클릭을 누르면 현재 씬 재시작
-        //if (isGameover && Input.GetMouseButtonDown(0))
-        //    SceneManager.LoadScene(1); //1번 씬 로드
+   
 
         //점수증가
     }
@@ -54,7 +51,7 @@ public class GameManager : MonoBehaviour
     public void OnplayerDead()
     {
         isGameover = true;
-        //gameOverUI.SetActive(true); //게임오버 UI 만들어야 함. 아직 안만들었음
+        gameOverUI.SetActive(true); //게임오버 UI 만들어야 함. 아직 안만들었음
     }
 
 }

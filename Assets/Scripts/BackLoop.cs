@@ -4,26 +4,28 @@ using UnityEngine;
 
 public class BackLoop : MonoBehaviour
 {
-    private float width;
+    private float hight;
+
+
     private void Awake()
     {
-        //¹è°æÀÇ ½ºÅ©·Ñ¸µÀ» À§ÇØ ¹Ú½ºÀÇ °¡·Î±æÀÌ¸¦ width·Î »ç¿ë
+        //ë°°ê²½ì˜ ìŠ¤í¬ë¡¤ë§ì„ ìœ„í•´ ë°•ìŠ¤ì˜ ê°€ë¡œê¸¸ì´ë¥¼ widthë¡œ ì‚¬ìš©
         BoxCollider2D backgroundCollider = GetComponent<BoxCollider2D>();
-        width = backgroundCollider.size.x;
-        System.Console.WriteLine(width);
+        hight = backgroundCollider.size.y;
+        System.Console.WriteLine(hight);
 
     }
 
     // Update is called once per frame
     void Update()
     {
-        if (transform.position.x <= -width)
+
             Reposition();
     }
 
     public void Reposition()
     {
-        Vector2 offset = new Vector2(width * 2f, 0);
+        Vector2 offset = new Vector2(0, hight * 2f);
         transform.position = (Vector2)transform.position + offset;
     }
 }

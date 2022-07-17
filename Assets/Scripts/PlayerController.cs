@@ -139,7 +139,7 @@ public class PlayerController : MonoBehaviour
             ++iReflectCnt;
         }
     }
-
+    #region 안쓰는거
     private void PlayerBehavior_A()
     {
         switch (eState)
@@ -447,6 +447,7 @@ public class PlayerController : MonoBehaviour
                 break;
         }
     }
+    #endregion
 
     private void PlayerBehavior_C()
     {
@@ -530,6 +531,8 @@ public class PlayerController : MonoBehaviour
 
                 playerRigidbody.velocity = Vector2.zero;
 
+                //GameManager.instance.AddScore(100);
+
                 if (true == bStart)
                 {
                     Arrow = Instantiate(ArrowPrefab) as ArrowController;
@@ -573,11 +576,11 @@ public class PlayerController : MonoBehaviour
                 //게임 매니저의 게임오버 처리
                 GameManager.instance.OnplayerDead();
 
-                GameOverPage = Instantiate(GameOverPagePrefab) as GameOverMenu;
+                //GameOverPage = Instantiate(GameOverPagePrefab) as GameOverMenu;
 
-                Vector3 vPos = new Vector3(0f, transform.position.y + 10f, 0f);
+                //Vector3 vPos = new Vector3(0f, transform.position.y + 10f, 0f);
                 
-                GameOverPage.transform.position = vPos;
+                //GameOverPage.transform.position = vPos;
 
                 break;
         }
