@@ -6,6 +6,8 @@ public class ArrowController : MonoBehaviour
 {
     private Transform PlayerTransform;
     private float     fAngleZ;
+    private Vector3   vPivot;
+    private bool      isOnMovableBlock = false;
 
     void Start()
     { 
@@ -14,7 +16,7 @@ public class ArrowController : MonoBehaviour
     void Update()
     {
         fAngleZ = transform.eulerAngles.z;
-
+        
         ArrowBehavior();
     }
 
@@ -24,11 +26,21 @@ public class ArrowController : MonoBehaviour
         {
             Vector3 vMouseWorldPos = UnityEngine.Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            float fSize = Vector3.Magnitude(transform.position - vMouseWorldPos);
+            float fSize  = 0f;
+            Vector3 vDir = Vector3.zero;
+
+            if(false == isOnMovableBlock)
+            {
+                fSize = Vector3.Magnitude(transform.position - vMouseWorldPos);
+                vDir  = Vector3.Normalize(transform.position - vMouseWorldPos);
+            }
+            else
+            {
+                fSize = Vector3.Magnitude(vPivot - vMouseWorldPos);
+                vDir  = Vector3.Normalize(vPivot - vMouseWorldPos);
+            }
 
             float fNewSize = Mathf.Clamp((fSize - 10f) * 3f, 0.1f, 1.0f);
-
-            Vector3 vDir = Vector3.Normalize(transform.position - vMouseWorldPos);
 
             Vector3 vLook  = new Vector3(0f, 0f, 1f);
             Vector3 vRight = Vector3.Cross(vDir, vLook);
@@ -45,6 +57,12 @@ public class ArrowController : MonoBehaviour
     public void SetPlayerTransform(Transform transform)
     {
         PlayerTransform = transform;
+        vPivot = new Vector3(0f, transform.position.y, 0f);
+    }
+
+    public void SetState()
+    {
+        isOnMovableBlock = true;
     }
 
     public void AngleCorrection()

@@ -29,56 +29,68 @@ public class ObjectGenerator : MonoBehaviour
 
     private BLOCKSIZE GeneratedBlockSize;
     private DIR       PrevDir;
-    private bool      isRandom        = false;
+    private bool      isRandom        = true;
     private int       iFloor          = 6;
     private float     fPrevX          = 0f;
     private float     fHeightInterval = 5f;
     private float     fGroundPos      = -0.4f;
 
+    private PlayerController Player;
     void Start()
     {
         Blocks = new Queue<BlockController>();
 
-        BlockTest();
+        //BlockTest();
 
-        //StaticGenerator();
+        StaticGenerator();
     }
-
     void Update()
     {
-        //DynamicGenerator();
+        DynamicGenerator();
     }
 
     void BlockTest()
     {
         Block = Instantiate(Block_1x) as BlockController;
         Block.transform.position = new Vector3(-2.5f, fHeightInterval - 0.9f);
+        Block.SetMoveState();
     }
 
     void BlockGenerator()
     {
-        float fRandomSize = Random.Range(0f, 10f);
+        float fRandomSize = Random.Range(0f, 1f);
+        float fRandomMove = Random.Range(0f, 1f);
 
-        if (fRandomSize <= 2.5f)
+        if (fRandomSize <= 0.3f)
         {
             Block = Instantiate(Block_1x) as BlockController;
             GeneratedBlockSize = BLOCKSIZE._1x;
+
+            if(fRandomMove < 0.93f)
+            {
+                Block.SetMoveState();
+            }
         }
-        else if (fRandomSize <= 5.5f)
+        else if (fRandomSize <= 0.7f)
         {
             Block = Instantiate(Block_2x) as BlockController;
             GeneratedBlockSize = BLOCKSIZE._2x;
+
+            if (fRandomMove < 0.03f)
+            {
+                Block.SetMoveState();
+            }
         }
-        else if (fRandomSize <= 9f)
+        else
         {
             Block = Instantiate(Block_3x) as BlockController;
             GeneratedBlockSize = BLOCKSIZE._3x;
         }
-        else
-        {
-            Block = Instantiate(Block_4x) as BlockController;
-            GeneratedBlockSize = BLOCKSIZE._4x;
-        }
+        //else
+        //{
+        //    Block = Instantiate(Block_4x) as BlockController;
+        //    GeneratedBlockSize = BLOCKSIZE._4x;
+        //}
     }
 
     #region DYNAMIC_GENERATOR

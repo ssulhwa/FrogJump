@@ -21,14 +21,16 @@ public class PlayerController : MonoBehaviour
     };
 
     private Vector2 vDir;
-    private STATE   eState      = STATE.STATE_FLYING;
-    private int     iReflectCnt = 0;
-    private float   fPower      = 0f;
-    private float   fTimeAcc    = 0f;
-    private float   fDist       = 0f;
-    private bool    bStart      = false;
-    private bool    isGrounded  = false;
-    private bool    isDead      = false;
+    private STATE   eState           = STATE.STATE_FLYING;
+    private int     iReflectCnt      = 0;
+    private float   fPower           = 0f;
+    private float   fTimeAcc         = 0f;
+    private float   fDist            = 0f;
+    private bool    bStart           = false;
+    private bool    isGrounded       = false;
+    private bool    isDead           = false;
+    private bool    isOnMovableBlock = false;
+
 
     [SerializeField]
     private ArrowController ArrowPrefab;
@@ -60,8 +62,17 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = new Vector3(BlockTransform.position.x + fDist, transform.position.y, transform.position.z);
         }
+        if(transform.position.y < 3f)
+        {
+            isOnMovableBlock = false;
+        }
 
         PlayerBehavior();
+    }
+
+    public void SetState(bool state)
+    {
+        isOnMovableBlock = state;
     }
 
     #region COLLISION
@@ -88,6 +99,8 @@ public class PlayerController : MonoBehaviour
         {
             transform.position = new Vector3(transform.position.x - 0.02f, transform.position.y, transform.position.z);
         }
+
+        
     }
 
     private void OnCollisionExit2D(Collision2D collision)
@@ -162,6 +175,11 @@ public class PlayerController : MonoBehaviour
                 Arrow = Instantiate(ArrowPrefab) as ArrowController;
 
                 Arrow.SetPlayerTransform(transform);
+                
+                if(true == isOnMovableBlock)
+                {
+                    Arrow.SetState();
+                }
 
                 Arrow.transform.position = this.transform.position;
 
@@ -181,7 +199,7 @@ public class PlayerController : MonoBehaviour
 
                     transform.right = new Vector3(vDir.x, 0f, 0f);
 
-                    fPower = Arrow.transform.localScale.y * 800f;
+                    fPower = Arrow.transform.localScale.y * 800f * 1.05f;
 
                     eState = STATE.STATE_JUMPING;
                 }
