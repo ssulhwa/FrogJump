@@ -33,7 +33,7 @@ public class ObjectGenerator : MonoBehaviour
     private int       iFloor          = 6;
     private float     fPrevX          = 0f;
     private float     fHeightInterval = 5f;
-    private float     fGroundPos      = -0.4f;
+    private float     fGroundPos      = -1f;
 
     private PlayerController Player;
     void Start()
