@@ -4,13 +4,15 @@ using UnityEngine;
 
 public class ObjectGenerator : MonoBehaviour
 {
-    public BlockController Block_1x;
-    public BlockController Block_2x;
-    public BlockController Block_3x;
-    public BlockController Block_4x;
+    public BlockController      Block_1x;
+    public BlockController      Block_2x;
+    public BlockController      Block_3x;
+    public BlockController      Block_4x;
+    public BackGroundController BGPrefab;
 
-    private BlockController Block;
-    
+    private BlockController      Block;
+    private BackGroundController BG;
+
     private enum BLOCKSIZE
     {
         Various,
@@ -26,6 +28,7 @@ public class ObjectGenerator : MonoBehaviour
     }
 
     private Queue<BlockController> Blocks;
+    private Queue<BackGroundController> BGs;
 
     private BLOCKSIZE GeneratedBlockSize;
     private DIR       PrevDir;
@@ -35,28 +38,49 @@ public class ObjectGenerator : MonoBehaviour
     private float     fHeightInterval = 5f;
     private float     fGroundPos      = -1f;
 
-    private PlayerController Player;
     void Start()
     {
         Blocks = new Queue<BlockController>();
+        BGs    = new Queue<BackGroundController>();
 
-        //BlockTest();
-
-        StaticGenerator();
+        StaticBlockGenerator();
+        StaticBGGenerator();
     }
     void Update()
     {
-        DynamicGenerator();
+        DynamicBlockGenerator();
+        DynamicBGGenerator();
     }
 
-    void BlockTest()
+    private void StaticBGGenerator()
     {
-        Block = Instantiate(Block_1x) as BlockController;
-        Block.transform.position = new Vector3(-2.5f, fHeightInterval - 0.9f);
-        Block.SetMoveState();
+        for(int i = 0; i < 3; ++i)
+        {
+            BG = Instantiate(BGPrefab) as BackGroundController;
+
+            BG.transform.position = new Vector3(0f, 9f + 19.4f * i, 0f);
+
+            BGs.Enqueue(BG);
+        }
     }
 
-    void BlockGenerator()
+    private void DynamicBGGenerator()
+    {
+        if(false == BGs.Peek().gameObject.activeInHierarchy)
+        {
+            BackGroundController FirstBG = BGs.Peek();
+
+            FirstBG.gameObject.SetActive(true);
+
+            FirstBG.transform.Translate(0f, 19.4f * 3, 0f);
+
+            BGs.Enqueue(FirstBG);
+
+            BGs.Dequeue();
+        }
+    }
+
+    private void BlockGenerator()
     {
         float fRandomSize = Random.Range(0f, 1f);
         float fRandomMove = Random.Range(0f, 1f);
@@ -93,8 +117,8 @@ public class ObjectGenerator : MonoBehaviour
         //}
     }
 
-    #region DYNAMIC_GENERATOR
-    private void DynamicGenerator()
+    #region DYNAMIC_BLOCK_GENERATOR
+    private void DynamicBlockGenerator()
     {
         if(null == Blocks.Peek())
         {
@@ -176,8 +200,8 @@ public class ObjectGenerator : MonoBehaviour
     }
     #endregion
 
-    #region STATIC_GENERATOR
-    void StaticGenerator()
+    #region STATIC_BLOCK_GENERATOR
+    void StaticBlockGenerator()
     {
         for (int i = 0; i < iFloor; ++i)
         {

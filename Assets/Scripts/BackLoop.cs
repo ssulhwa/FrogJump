@@ -4,6 +4,8 @@ using UnityEngine;
 
 public class BackLoop : MonoBehaviour
 {
+    // 배경이 자연스럽게 이어지기 위한 두 배경의 Y 간격 = 19.4
+
     private float hight;
 
 
