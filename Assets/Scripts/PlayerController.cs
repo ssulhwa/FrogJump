@@ -1,7 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
+using UnityEngine.SceneManagement;
 public class PlayerController : MonoBehaviour
 {
     #region VARIABLE
@@ -27,9 +27,10 @@ public class PlayerController : MonoBehaviour
     private float   fTimeAcc         = 0f;
     private float   fDist            = 0f;
     private bool    bStart           = false;
-    private bool    isGrounded       = false;
+    public  bool    isGrounded       = false;
     private bool    isDead           = false;
     private bool    isOnMovableBlock = false;
+    private bool beginGround = false;
 
 
     [SerializeField]
@@ -44,6 +45,19 @@ public class PlayerController : MonoBehaviour
     private AudioSource playerAudio;
 
     #endregion
+    public static PlayerController instance;
+
+    private void Awake()
+    {
+        if (instance == null)
+            instance = this; //없다면 자기자신을 할당
+        else
+        {
+            //인스턴스가 이미 있다면
+            Debug.LogWarning("플레이어가 두명 존재합니다.");
+            Destroy(gameObject); //이미 생성된 인스턴스가 있으므로 자기자신을 파괴
+        }
+    }
 
     void Start()
     {
@@ -79,8 +93,11 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+        if (collision.collider.tag == "BeginGround")
+            beginGround = true;
+
         //첫번째로 충돌한 노말벡터의 y축 방향이 0.7이상일 경우(위쪽 방향일 경우)
-        if(collision.contacts[0].normal.y > 0.7f)
+        if (collision.contacts[0].normal.y > 0.7f)
         {
             isGrounded  = true;      //땅위에 있다
             iReflectCnt = 0;
@@ -224,6 +241,8 @@ public class PlayerController : MonoBehaviour
                     isGrounded = false;
                     animator.SetBool("Grounded", isGrounded);
 
+                    beginGround = false;
+
                     fTimeAcc = 0f;
                 }
 
@@ -237,8 +256,6 @@ public class PlayerController : MonoBehaviour
                 animator.SetBool("Grounded", isGrounded);
 
                 playerRigidbody.velocity = Vector2.zero;
-
-                //GameManager.instance.AddScore(100);
 
                 if (true == bStart)
                 {
@@ -260,13 +277,12 @@ public class PlayerController : MonoBehaviour
                 {
                     fTimeAcc += Time.deltaTime;
                 }
-                if (fTimeAcc > .5f && true == isGrounded)
+                if (fTimeAcc > .2f && true == isGrounded)
                 {
                     eState = STATE.STATE_IDLE;
 
                     fTimeAcc = 0f;
                 }
-
                 break;
 
             case STATE.STATE_DIE:
@@ -290,7 +306,6 @@ public class PlayerController : MonoBehaviour
                 //Vector3 vPos = new Vector3(0f, transform.position.y + 10f, 0f);
 
                 //GameOverPage.transform.position = vPos;
-
                 Time.timeScale = 0f;
 
                 break;
@@ -298,4 +313,6 @@ public class PlayerController : MonoBehaviour
     }
 
     #endregion
+
+    
 }

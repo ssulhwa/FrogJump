@@ -6,6 +6,12 @@ public class BlockController : MonoBehaviour
 {
     private PlayerController Player;
     private bool isMoving = false;
+    private bool stepped = false;
+
+    private void OnEnable()
+    {
+        stepped = false;
+    }
 
     void Start()
     {
@@ -43,5 +49,18 @@ public class BlockController : MonoBehaviour
     private void OnCollisionEnter2D(Collision2D collision)
     {
         Player.SetState(isMoving);
+
+        if(gameObject.tag != "BeginGround")
+        {
+            if (collision.collider.tag == "Player" && !stepped)
+            {
+                
+                if(collision.contacts[0].normal.y < -0.7f)
+                {
+                    stepped = true;
+                    GameManager.instance.AddScore(100);
+                }
+            }
+        }
     }
 }
