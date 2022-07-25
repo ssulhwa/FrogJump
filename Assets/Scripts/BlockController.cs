@@ -5,8 +5,13 @@ using UnityEngine;
 public class BlockController : MonoBehaviour
 {
     private PlayerController Player;
+    private GameObject       Particle;
+
     private bool isMoving = false;
-    private bool stepped = false;
+    private bool stepped  = false;
+    private int  iMySize  = 0;
+
+    private List<GameObject> Particles;
 
     private void OnEnable()
     {
@@ -16,6 +21,53 @@ public class BlockController : MonoBehaviour
     void Start()
     {
         Player = GameObject.FindObjectOfType<PlayerController>();
+
+        Particles = new List<GameObject>();
+
+        Vector3 vPos= transform.position;
+
+        if(iMySize == 1)
+        {
+            for (int i = -1; i <= iMySize; i += 2)
+            {
+                Particle = Instantiate(Resources.Load<GameObject>("Splash" + ((int)Random.Range(1f, 5.99f)).ToString()));
+
+                vPos.x = transform.position.x + i / 2f;
+                vPos.y = transform.position.y + 1f;
+
+                Particle.transform.position = vPos;
+
+                Particles.Add(Particle);
+            }
+        }
+        else if(iMySize == 2)
+        {
+            for(int i = -1; i < iMySize; ++i)
+            {
+                Particle = Instantiate(Resources.Load<GameObject>("Splash" + ((int)Random.Range(1f, 5.99f)).ToString()));
+
+                vPos.x = transform.position.x + i;
+                vPos.y = transform.position.y + 1f;
+
+                Particle.transform.position = vPos;
+
+                Particles.Add(Particle);
+            }
+        }
+        else if (iMySize == 3)
+        {
+            for (int i = -2; i < iMySize; ++i)
+            {
+                Particle = Instantiate(Resources.Load<GameObject>("Splash" + ((int)Random.Range(1f, 5.99f)).ToString()));
+
+                vPos.x = transform.position.x + i;
+                vPos.y = transform.position.y + 1f;
+
+                Particle.transform.position = vPos;
+
+                Particles.Add(Particle);
+            }
+        }
     }
 
     void Update()
@@ -27,6 +79,13 @@ public class BlockController : MonoBehaviour
 
         if(transform.position.y + 15f < UnityEngine.Camera.main.gameObject.transform.position.y)
         {
+            foreach(var Particle in Particles)
+            {
+                Destroy(Particle);
+            }
+
+            Particles.Clear();
+            
             Destroy(gameObject);
         }
     }
@@ -35,15 +94,21 @@ public class BlockController : MonoBehaviour
     {
         transform.RotateAround(Vector3.up, Vector3.up, 100 * Time.deltaTime);
         transform.right = Vector3.right;
+
+        Vector3 vParticlePos = transform.position;
+
+        vParticlePos.y = transform.position.y + 1f;
+
+        Particle.transform.position = vParticlePos;
     }
 
     public void SetMoveState()
     {
         isMoving = true;
     }
-    public bool GetState()
+    public void SetSize(int size)
     {
-        return isMoving;
+        iMySize = size;
     }
 
     private void OnCollisionEnter2D(Collision2D collision)

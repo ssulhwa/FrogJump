@@ -82,38 +82,50 @@ public class ObjectGenerator : MonoBehaviour
 
     private void BlockGenerator()
     {
-        float fRandomSize = Random.Range(0f, 1f);
         float fRandomMove = Random.Range(0f, 1f);
 
-        if (fRandomSize <= 0.3f)
+        Block = Instantiate(Block_1x) as BlockController;
+        GeneratedBlockSize = BLOCKSIZE._1x;
+        
+        Block.SetSize(1);
+        
+        if(fRandomMove < 0.30f)
         {
-            Block = Instantiate(Block_1x) as BlockController;
-            GeneratedBlockSize = BLOCKSIZE._1x;
-
-            if(fRandomMove < 0.93f)
-            {
-                Block.SetMoveState();
-            }
+            Block.SetMoveState();
         }
-        else if (fRandomSize <= 0.7f)
-        {
-            Block = Instantiate(Block_2x) as BlockController;
-            GeneratedBlockSize = BLOCKSIZE._2x;
-
-            if (fRandomMove < 0.03f)
-            {
-                Block.SetMoveState();
-            }
-        }
-        else
-        {
-            Block = Instantiate(Block_3x) as BlockController;
-            GeneratedBlockSize = BLOCKSIZE._3x;
-        }
+        //float fRandomSize = Random.Range(0f, 1f);
+        //float fRandomMove = Random.Range(0f, 1f);
+        //
+        //if (fRandomSize <= 0.3f)
+        //{
+        //    Block = Instantiate(Block_1x) as BlockController;
+        //    GeneratedBlockSize = BLOCKSIZE._1x;
+        //
+        //    Block.SetSize(1);
+        //
+        //    if(fRandomMove < 0.05f)
+        //    {
+        //        Block.SetMoveState();
+        //    }
+        //}
+        //else if (fRandomSize <= 0.7f)
+        //{
+        //    Block = Instantiate(Block_2x) as BlockController;
+        //    GeneratedBlockSize = BLOCKSIZE._2x;
+        //
+        //    Block.SetSize(2);
+        //
+        //    if (fRandomMove < 0.05f)
+        //    {
+        //        Block.SetMoveState();
+        //    }
+        //}
         //else
         //{
-        //    Block = Instantiate(Block_4x) as BlockController;
-        //    GeneratedBlockSize = BLOCKSIZE._4x;
+        //    Block = Instantiate(Block_3x) as BlockController;
+        //    GeneratedBlockSize = BLOCKSIZE._3x;
+        //
+        //    Block.SetSize(3);
         //}
     }
 

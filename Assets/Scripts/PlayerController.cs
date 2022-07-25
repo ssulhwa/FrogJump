@@ -16,7 +16,8 @@ public class PlayerController : MonoBehaviour
         STATE_JUMPING,
         STATE_FLYING,
         STATE_LANDING,
-        STATE_DIE,
+        STATE_DIE_1,
+        STATE_DIE_2,
         STATE_END
     };
 
@@ -128,41 +129,44 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.tag == "Dead" && !isDead)
         {
-            eState = STATE.STATE_DIE;
+            eState = STATE.STATE_DIE_1;
         }     
         if(collision.tag == "ReflectR" || collision.tag == "ReflectL")
         {
-            playerAudio.Play();
-
-            Vector3 vNormal;
-
-            if(collision.tag == "ReflectR")
+            if(false == isOnMovableBlock)
             {
-                vNormal = new Vector3(-1f, 0f, 0f);
+                playerAudio.Play();
+
+                Vector3 vNormal;
+
+                if (collision.tag == "ReflectR")
+                {
+                    vNormal = new Vector3(-1f, 0f, 0f);
+                }
+                else
+                {
+                    vNormal = new Vector3(1f, 0f, 0f);
+                }
+
+                if (iReflectCnt == 1)
+                {
+                    vDir.y *= -1;
+                }
+
+                Vector3 vReflect = Vector3.Reflect(vDir, vNormal);
+
+                Vector3.Normalize(vDir);
+
+                transform.right = new Vector3(-vDir.x, 0f, 0f);
+
+                playerRigidbody.velocity = Vector2.zero;
+
+                playerRigidbody.AddForce(vReflect * fPower);
+
+                vDir = vReflect;
+
+                ++iReflectCnt;
             }
-            else
-            {
-                vNormal = new Vector3(1f, 0f, 0f);
-            }
-
-            if(iReflectCnt == 1)
-            {
-                vDir.y *= -1;
-            }
-
-            Vector3 vReflect = Vector3.Reflect(vDir, vNormal);
-            
-            Vector3.Normalize(vDir);
-
-            transform.right = new Vector3(-vDir.x, 0f, 0f);
-
-            playerRigidbody.velocity = Vector2.zero;
-
-            playerRigidbody.AddForce(vReflect * fPower);
-
-            vDir = vReflect;
-
-            ++iReflectCnt;
         }
     }
 
@@ -285,7 +289,7 @@ public class PlayerController : MonoBehaviour
                 }
                 break;
 
-            case STATE.STATE_DIE:
+            case STATE.STATE_DIE_1:
 
                 //오디오 소스에 할당된 오디오 클립을 deathClip 으로 변경
                 playerAudio.clip = deathClip;
@@ -308,11 +312,14 @@ public class PlayerController : MonoBehaviour
                 //GameOverPage.transform.position = vPos;
                 Time.timeScale = 0f;
 
+                eState = STATE.STATE_DIE_2;
+
+                break;
+
+            case STATE.STATE_DIE_2:
                 break;
         }
     }
 
     #endregion
-
-    
 }
