@@ -99,7 +99,16 @@ public class BlockController : MonoBehaviour
 
         vParticlePos.y = transform.position.y + 1f;
 
-        Particle.transform.position = vParticlePos;
+        
+
+        int iSize = Particles.Count;
+
+        for(int i = -1; i <= iSize; i += 2)
+        {
+            vParticlePos.x = transform.position.x + i / 2f;
+            
+            Particles[(i + 1)/2].transform.position = vParticlePos;
+        }
     }
 
     public void SetMoveState()

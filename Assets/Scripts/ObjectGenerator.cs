@@ -82,44 +82,39 @@ public class ObjectGenerator : MonoBehaviour
 
     private void BlockGenerator()
     {
+        //float fRandomMove = Random.Range(0f, 1f);
+
+        //Block = Instantiate(Block_1x) as BlockController;
+        //GeneratedBlockSize = BLOCKSIZE._1x;
+
+        //Block.SetSize(1);
+
+        //if(fRandomMove < 0.30f)
+        //{
+        //    Block.SetMoveState();
+        //}
+        float fRandomSize = Random.Range(0f, 1f);
         float fRandomMove = Random.Range(0f, 1f);
 
-        Block = Instantiate(Block_1x) as BlockController;
-        GeneratedBlockSize = BLOCKSIZE._1x;
-        
-        Block.SetSize(1);
-        
-        if(fRandomMove < 0.30f)
+        if (fRandomSize <= 0.7f)
         {
-            Block.SetMoveState();
+            Block = Instantiate(Block_1x) as BlockController;
+            GeneratedBlockSize = BLOCKSIZE._1x;
+
+            Block.SetSize(1);
+
+            if (fRandomMove < 0.15f)
+            {
+                Block.SetMoveState();
+            }
         }
-        //float fRandomSize = Random.Range(0f, 1f);
-        //float fRandomMove = Random.Range(0f, 1f);
-        //
-        //if (fRandomSize <= 0.3f)
-        //{
-        //    Block = Instantiate(Block_1x) as BlockController;
-        //    GeneratedBlockSize = BLOCKSIZE._1x;
-        //
-        //    Block.SetSize(1);
-        //
-        //    if(fRandomMove < 0.05f)
-        //    {
-        //        Block.SetMoveState();
-        //    }
-        //}
-        //else if (fRandomSize <= 0.7f)
-        //{
-        //    Block = Instantiate(Block_2x) as BlockController;
-        //    GeneratedBlockSize = BLOCKSIZE._2x;
-        //
-        //    Block.SetSize(2);
-        //
-        //    if (fRandomMove < 0.05f)
-        //    {
-        //        Block.SetMoveState();
-        //    }
-        //}
+        else
+        {
+            Block = Instantiate(Block_2x) as BlockController;
+            GeneratedBlockSize = BLOCKSIZE._2x;
+
+            Block.SetSize(2);
+        }
         //else
         //{
         //    Block = Instantiate(Block_3x) as BlockController;

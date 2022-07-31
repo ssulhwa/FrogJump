@@ -31,8 +31,6 @@ public class PlayerController : MonoBehaviour
     public  bool    isGrounded       = false;
     private bool    isDead           = false;
     private bool    isOnMovableBlock = false;
-    private bool beginGround = false;
-
 
     [SerializeField]
     private ArrowController ArrowPrefab;
@@ -94,9 +92,6 @@ public class PlayerController : MonoBehaviour
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
-        if (collision.collider.tag == "BeginGround")
-            beginGround = true;
-
         //첫번째로 충돌한 노말벡터의 y축 방향이 0.7이상일 경우(위쪽 방향일 경우)
         if (collision.contacts[0].normal.y > 0.7f)
         {
@@ -245,7 +240,7 @@ public class PlayerController : MonoBehaviour
                     isGrounded = false;
                     animator.SetBool("Grounded", isGrounded);
 
-                    beginGround = false;
+                    isOnMovableBlock = false;
 
                     fTimeAcc = 0f;
                 }
