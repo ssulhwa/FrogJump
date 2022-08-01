@@ -9,6 +9,9 @@ public class ArrowController : MonoBehaviour
     private Vector3   vPivot;
     private bool      isOnMovableBlock = false;
 
+    private bool    bOnce = false;
+    private Vector3 vInitWorldPos;
+
     void Start()
     { 
     }
@@ -24,30 +27,39 @@ public class ArrowController : MonoBehaviour
     {
         if (Input.GetMouseButton(0))
         {
+            if(false == bOnce)
+            {
+                vInitWorldPos = UnityEngine.Camera.main.ScreenToWorldPoint(Input.mousePosition);
+
+                bOnce = true;
+            }
             Vector3 vMouseWorldPos = UnityEngine.Camera.main.ScreenToWorldPoint(Input.mousePosition);
 
-            float fSize  = 0f;
+            float fSize = 0f;
             Vector3 vDir = Vector3.zero;
 
-            if(false == isOnMovableBlock)
+            if (false == isOnMovableBlock)
             {
-                fSize = Vector3.Magnitude(transform.position - vMouseWorldPos);
-                vDir  = Vector3.Normalize(transform.position - vMouseWorldPos);
+                fSize = Vector3.Magnitude(vInitWorldPos - vMouseWorldPos);
+                vDir = Vector3.Normalize(vInitWorldPos - vMouseWorldPos);
             }
             else
             {
                 fSize = Vector3.Magnitude(vPivot - vMouseWorldPos);
-                vDir  = Vector3.Normalize(vPivot - vMouseWorldPos);
+                vDir = Vector3.Normalize(vPivot - vMouseWorldPos);
             }
 
-            float fNewSize = Mathf.Clamp((fSize - 10f) * 3f, 0.1f, 1.0f);
+            //float fNewSize = Mathf.Clamp((fSize - 10f) * 3f, 0.1f, 1.0f);
+            float fNewSize = Mathf.Clamp((fSize * 0.1f) * 3f, 0.1f, 1.0f);
 
-            Vector3 vLook  = new Vector3(0f, 0f, 1f);
+            Debug.Log(fSize);
+
+            Vector3 vLook = new Vector3(0f, 0f, 1f);
             Vector3 vRight = Vector3.Cross(vDir, vLook);
-            
-            transform.up    = vDir;
+
+            transform.up = vDir;
             transform.right = vRight;
-            
+
             transform.localScale = new Vector3(1f, fNewSize, 1f);
         }
 
